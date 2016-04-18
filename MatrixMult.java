@@ -8,25 +8,36 @@ import java.util.Random;
 
 public class MatrixMult {
 
-    public static final int N = 2;
+    public static final int N = 4;
     
     @SuppressWarnings("empty-statement")
     public static void main(String[] args) {
         
-        int [][] arrayA = new int[N][N];
-        int [][] arrayB = new int[N][N];
+//        int [][] arrayA = new int[N][N];
+//        int [][] arrayB = new int[N][N];
         int [][] arrayC = new int[N][N];
         
         Random rand = new Random();
         
-//        int [][] arrayA = {{1, 1, 1, 1},{2, 2, 2, 2}, {3, 3, 3, 3}, {2, 2, 2, 2}};
-//        int [][] arrayB = {{2, 2, 2, 2},{1, 1, 1, 1}, {0, 0, 0, 0}, {1, 1, 1, 1}};
-        for(int i = 0; i < N; i++) {
-            for(int j = 0; j < N; j++) {
-                arrayA[i][j] = 2;
-                arrayB[i][j] = 2;
-            }
-        }
+        //filling array A and B with random numbers
+//                for(int a=0;a<tempArrSize;a++)//loop for column
+//                {
+//                    for(int b=0;b<tempArrSize;b++)//loop for row
+//                    {
+//                        Random r = new Random();//create new random
+//                        arrayA[a][b]=r.nextInt(MAXNUMBER-MINNUMBER) + MINNUMBER;//get random number for 1st arry cells
+//                        arrayB[a][b]=r.nextInt(MAXNUMBER-MINNUMBER) + MINNUMBER;//get random number for 2nd arry cells
+//                    }
+//                }
+        
+        int [][] arrayA = {{1, 1, 1, 1},{2, 2, 2, 2}, {3, 3, 3, 3}, {2, 2, 2, 2}};
+        int [][] arrayB = {{2, 2, 2, 2},{1, 1, 1, 1}, {0, 0, 0, 0}, {1, 1, 1, 1}};
+//        for(int i = 0; i < N; i++) {
+//            for(int j = 0; j < N; j++) {
+//                arrayA[i][j] = 2;
+//                arrayB[i][j] = 2;
+//            }
+//        }
         
 //        arrayC = traditionalMult(N, arrayA, arrayB, arrayC);
 //        arrayC = divAndConqMult(N, arrayA, arrayB);
@@ -182,7 +193,7 @@ public class MatrixMult {
                 b22[i][j] = B[i + n][j + n];    // bottom right b
             }
         }
-        
+        // all the strassen calculations
         P = strassenMult(n, addMatrices(n, a11, a22), addMatrices(n, b11, b22));
         Q = strassenMult(n, addMatrices(n, a21, a22), b11);
         R = strassenMult(n, a11, subtractMatrices(n, b12, b22));
@@ -191,10 +202,10 @@ public class MatrixMult {
         U = strassenMult(n, subtractMatrices(n, a21, a11), addMatrices(n, b11, b12));
         V = strassenMult(n, subtractMatrices(n, a12, a22), addMatrices(n, b21, b22));
         
-        c11 = subtractMatrices(n, addMatrices(n, P, S), addMatrices(n, T, V));
+        c11 = addMatrices(n, subtractMatrices(n, addMatrices(n, P, S), T), V);
         c12 = addMatrices(n, R, T);
         c21 = addMatrices(n, Q, S);
-        c22 = subtractMatrices(n, addMatrices(n, P, R), addMatrices(n, Q, U));
+        c22 = addMatrices(n, subtractMatrices(n, addMatrices(n, P, R), Q), U);
         
         // fill up the resulting array
         for(int i = 0; i < n; i++)
