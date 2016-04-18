@@ -8,16 +8,24 @@ import java.util.Random;
 
 public class MatrixMult {
 
-    public static final int N = 4;
+    static final int N = 4;
+    static final int MAX = 4;
+    static final int MIN = 2;
     
     @SuppressWarnings("empty-statement")
     public static void main(String[] args) {
         
-//        int [][] arrayA = new int[N][N];
-//        int [][] arrayB = new int[N][N];
+        int [][] arrayA = new int[N][N];
+        int [][] arrayB = new int[N][N];
         int [][] arrayC = new int[N][N];
         
-        Random rand = new Random();
+        for(int i = 0; i < N; i++) {
+            for(int j = 0; j < N; j++) {
+                Random rand = new Random();
+                arrayA[i][j] = rand.nextInt(MAX - MIN) + MIN;
+                arrayB[i][j] = rand.nextInt(MAX - MIN) + MIN;
+            }
+        }
         
         //filling array A and B with random numbers
 //                for(int a=0;a<tempArrSize;a++)//loop for column
@@ -30,8 +38,8 @@ public class MatrixMult {
 //                    }
 //                }
         
-        int [][] arrayA = {{1, 1, 1, 1},{2, 2, 2, 2}, {3, 3, 3, 3}, {2, 2, 2, 2}};
-        int [][] arrayB = {{2, 2, 2, 2},{1, 1, 1, 1}, {0, 0, 0, 0}, {1, 1, 1, 1}};
+//        int [][] arrayA = {{1, 1, 1, 1},{2, 2, 2, 2}, {3, 3, 3, 3}, {2, 2, 2, 2}};
+//        int [][] arrayB = {{2, 2, 2, 2},{1, 1, 1, 1}, {0, 0, 0, 0}, {1, 1, 1, 1}};
 //        for(int i = 0; i < N; i++) {
 //            for(int j = 0; j < N; j++) {
 //                arrayA[i][j] = 2;
