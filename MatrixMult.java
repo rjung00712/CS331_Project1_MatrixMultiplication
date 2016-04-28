@@ -7,57 +7,86 @@ package matrixmult;
 import java.util.Random;
 
 public class MatrixMult {
-
-    static final int N = 4;
-    static final int MAX = 4;
-    static final int MIN = 2;
+    
+    static final int N = 16;     // size of matrix 2^k
+    static final int M = 1;    // number of test iterations
+    static final int MAX = 9;   
+    static final int MIN = -9;
     
     @SuppressWarnings("empty-statement")
     public static void main(String[] args) {
+        long start, end, nanoseconds = 0;   // start and end timers
+        double avgNanoseconds, milliseconds = 0.0;           
         
         int [][] arrayA = new int[N][N];
         int [][] arrayB = new int[N][N];
         int [][] arrayC = new int[N][N];
         
-        for(int i = 0; i < N; i++) {
-            for(int j = 0; j < N; j++) {
+//        int [][] arrayA = {{1,3,0,1},{1,4,0,2},{1,4,1,3},{2,4,0,4}};
+//        int [][] arrayB = {{2,4,1,5},{3,3,1,6},{3,5,6,7},{4,8,0,8}};   
+        
+        for(int i = 0; i < N; i++) {    // fill arrays A & B with 
+            for(int j = 0; j < N; j++) {// random integers ins specified range
                 Random rand = new Random();
                 arrayA[i][j] = rand.nextInt(MAX - MIN) + MIN;
                 arrayB[i][j] = rand.nextInt(MAX - MIN) + MIN;
             }
         }
-        
-        //filling array A and B with random numbers
-//                for(int a=0;a<tempArrSize;a++)//loop for column
-//                {
-//                    for(int b=0;b<tempArrSize;b++)//loop for row
-//                    {
-//                        Random r = new Random();//create new random
-//                        arrayA[a][b]=r.nextInt(MAXNUMBER-MINNUMBER) + MINNUMBER;//get random number for 1st arry cells
-//                        arrayB[a][b]=r.nextInt(MAXNUMBER-MINNUMBER) + MINNUMBER;//get random number for 2nd arry cells
-//                    }
-//                }
-        
-//        int [][] arrayA = {{1, 1, 1, 1},{2, 2, 2, 2}, {3, 3, 3, 3}, {2, 2, 2, 2}};
-//        int [][] arrayB = {{2, 2, 2, 2},{1, 1, 1, 1}, {0, 0, 0, 0}, {1, 1, 1, 1}};
-//        for(int i = 0; i < N; i++) {
-//            for(int j = 0; j < N; j++) {
-//                arrayA[i][j] = 2;
-//                arrayB[i][j] = 2;
-//            }
-//        }
-        
-//        arrayC = traditionalMult(N, arrayA, arrayB, arrayC);
-//        arrayC = divAndConqMult(N, arrayA, arrayB);
-          arrayC = strassenMult(N, arrayA, arrayB);
-        
-        for(int i = 0; i < N; i++) {
-            for(int j = 0; j < N; j++) {
-                System.out.print(arrayC[i][j] + "\t");
-                if(j == N-1)
-                    System.out.println();
-            }
+        ////////////////// traditional multiplication ///////////////////////
+        for(int i = 1; i <= M; i++) {   
+            start = System.nanoTime();  // start
+            arrayC = traditionalMult(N, arrayA, arrayB, arrayC);
+            end = System.nanoTime();    // End         
+            nanoseconds += (end - start);    
         }
+        
+        avgNanoseconds = (double)nanoseconds / M;
+        milliseconds = avgNanoseconds / 1000000;    // convert nano to milli
+       
+        System.out.print("Traditional Multiplication average milliseconds: ");
+        System.out.printf("%.5f", milliseconds);
+        System.out.println();
+        //////////////////////////////////////////////////////////////////////
+        
+        avgNanoseconds = milliseconds = 0.0;  // reset
+        start = end = nanoseconds = 0;
+
+        ////////////// divide & conquer multiplication ///////////////////////
+        for(int i = 1; i <= M; i++) {   
+            start = System.nanoTime();  // start
+            arrayC = divAndConqMult(N, arrayA, arrayB);
+            end = System.nanoTime();    // End         
+            nanoseconds += (end - start);    
+        }
+        
+        avgNanoseconds = (double)nanoseconds / M;
+        milliseconds = avgNanoseconds / 1000000;    // convert nano to milli
+       
+        System.out.print("Divide & Conquer average milliseconds: ");
+        System.out.printf("%.6f", milliseconds);
+        System.out.println();
+        //////////////////////////////////////////////////////////////////////
+        
+        avgNanoseconds = milliseconds = 0.0;  // reset
+        start = end = nanoseconds = 0;
+        
+        ////////////////// Strassen multiplication ///////////////////////
+        for(int i = 1; i <= M; i++) {   
+            start = System.nanoTime();  // start
+            arrayC = strassenMult(N, arrayA, arrayB);
+            end = System.nanoTime();    // End         
+            nanoseconds += (end - start);    
+        }
+        
+        avgNanoseconds = (double)nanoseconds / M;
+        milliseconds = avgNanoseconds / 1000000;    // convert nano to milli
+       
+        System.out.print("Strassen Multiplication average milliseconds: ");
+        System.out.printf("%.6f", milliseconds);
+        System.out.println();
+        //////////////////////////////////////////////////////////////////////
+        
+        print(arrayC);
     }
     
     // traditional way of matrix multiplication
@@ -90,10 +119,6 @@ public class MatrixMult {
             traditionalMult(N, A, B, C);
             return C;
         }
-//        if(N == 1){ // base case
-//            C[0][0] = A[0][0] * B[0][0];
-//            return C;
-//        }
             
         // partition the matrix into submatrices
         int [][] a11 = new int[n][n];   // top left
@@ -243,7 +268,7 @@ public class MatrixMult {
         return C;   // return resulting matrix
     }
     
-    private static int[][] subtractMatrices(int N, int[][] A, int [][] B) {
+    public static int[][] subtractMatrices(int N, int[][] A, int [][] B) {
         int [][] C = new int [N][N];    // resulting matrix
         
         for(int i = 0; i < N; i++) {    // subtract matrices
@@ -252,5 +277,15 @@ public class MatrixMult {
             }
         }
         return C;   // return resulting matrix
+    }
+    
+    public static void print(int [][] C) {
+        for(int i = 0; i < N; i++) {
+            for(int j = 0; j < N; j++) {
+                System.out.print(C[i][j] + "\t");
+                if(j == N-1)
+                    System.out.println();
+            }
+        }
     }
 }
